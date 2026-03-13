@@ -76,8 +76,15 @@ st.divider()
 
 if are_costs_equal:
     st.error("🚫 **No Trade Possible**")
-    st.write("Since both countries have the same opportunity costs, there is no comparative advantage. Neither country stands to gain from trade, and the world relative price would simply equal the internal price of both.")
+    st.write("Since both countries have the same opportunity costs, there is no comparative advantage. Neither country stands to gain from trade.")
 else:
     lower_bound = min(oc_c_h, oc_c_f)
     upper_bound = max(oc_c_h, oc_c_f)
-    st.info(f"💡 In free trade, the world (
+    # This line is now one continuous string to avoid the SyntaxError
+    st.info(f"💡 In free trade, the world (relative) price of Cheese ($P_C/P_W$) will be between **{lower_bound:.2f}** and **{upper_bound:.2f}**.")
+    
+    # Text summary of trade direction
+    if oc_c_h < oc_c_f:
+        st.write("👉 **Home** will specialize in and export **Cheese**, while **Foreign** will specialize in and export **Wine**.")
+    else:
+        st.write("👉 **Foreign** will specialize in and export **Cheese**, while **Home** will specialize in and export **Wine**.")
