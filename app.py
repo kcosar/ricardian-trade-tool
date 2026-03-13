@@ -58,7 +58,7 @@ if use_equilibrium and not are_costs_equal:
     c_h, w_h = (0.5 * inc_h / p_final), (0.5 * inc_h)
     ax.plot([0, inc_h/p_final], [inc_h, 0], 'b--', alpha=0.6, label='Home Budget Line')
     ax.scatter(prod_h[0], prod_h[1], color='blue', edgecolors='black', s=100, zorder=6)
-    ax.text(prod_h[0], prod_h[1], '  Home Prod', verticalalignment='bottom', fontweight='bold', color='blue')
+    ax.text(prod_h[0], prod_h[1], '  Home production in trade', verticalalignment='bottom', fontweight='bold', color='blue')
     
     # Foreign Production & Consumption
     if oc_c_f < oc_c_h: # Specializes in Cheese
@@ -71,12 +71,12 @@ if use_equilibrium and not are_costs_equal:
     c_f, w_f = (0.5 * inc_f / p_final), (0.5 * inc_f)
     ax.plot([0, inc_f/p_final], [inc_f, 0], 'r--', alpha=0.6, label='Foreign Budget Line')
     ax.scatter(prod_f[0], prod_f[1], color='red', edgecolors='black', s=100, zorder=6)
-    ax.text(prod_f[0], prod_f[1], '  Foreign Prod', verticalalignment='top', fontweight='bold', color='red')
+    ax.text(prod_f[0], prod_f[1], '  Foreign production in trade', verticalalignment='top', fontweight='bold', color='red')
 
     # Consumption Points & Indifference Curves
     ax.scatter([c_h, c_f], [w_h, w_f], color=['blue', 'red'], zorder=5, s=80)
-    ax.text(c_h, w_h, '  Home Cons', verticalalignment='bottom')
-    ax.text(c_f, w_f, '  Foreign Cons', verticalalignment='top')
+    ax.text(c_h, w_h, '  Home consumption in trade', verticalalignment='bottom')
+    ax.text(c_f, w_f, '  Foreign Consumption trade', verticalalignment='top')
     
     c_space = np.linspace(0.1, max(max_c_h, max_c_f)*1.5, 100)
     u_h, u_f = (c_h**0.5 * w_h**0.5), (c_f**0.5 * w_f**0.5)
@@ -117,10 +117,10 @@ if not use_equilibrium:
         st.error("🚫 **No Trade Possible**")
     else:
         lower_bound, upper_bound = min(oc_c_h, oc_c_f), max(oc_c_h, oc_c_f)
-        st.info(f"💡 For mutually beneficial trade, the world price of Cheese ($P_C/P_W$) must be between **{lower_bound:.2f}** and **{upper_bound:.2f}** Wine.")
+        st.info(f"💡 In free trade, the world price of Cheese ($P_C/P_W$) will be between **{lower_bound:.2f}** and **{upper_bound:.2f}** Wine.")
 else:
     if are_costs_equal:
-        st.error("🚫 **No Equilibrium Possible**")
+        st.error("🚫 **No trade will take place: opportunity costs are the same!**")
     else:
         st.subheader("🌐 Market Clearing Equilibrium")
         st.write("Assuming **Cobb-Douglas Preferences** ($U = C^{0.5}W^{0.5}$), consumers spend 50% of their income on each good.")
