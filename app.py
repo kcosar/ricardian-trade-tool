@@ -98,7 +98,7 @@ if not use_equilibrium:
         st.error("🚫 **No Trade Possible**")
     else:
         lower_bound, upper_bound = min(oc_c_h, oc_c_f), max(oc_c_h, oc_c_f)
-        st.info(f"💡 For mutually beneficial trade, the world price of Cheese ($P_C/P_W$) must be between **{lower_bound:.2f}** and **{upper_bound:.2f}** Wine.")
+        st.info(f"💡 In free trade, the world price of Cheese ($P_C/P_W$) will be between **{lower_bound:.2f}** and **{upper_bound:.2f}** Wine. To see the equilibrium with a particular utility function, pick the option on the left side menu.")
 else:
     if are_costs_equal:
         st.error("🚫 **No Trade** (Opportunity costs are equal)")
