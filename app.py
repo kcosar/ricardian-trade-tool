@@ -139,7 +139,7 @@ else:
     if are_costs_equal:
         st.error("🚫 **No trade will take place: opportunity costs are the same!**")
     else:
-        st.subheader("🌐 Market Clearing Equilibrium")
+        st.subheader("🌐 Free Trade Equilibrium")
         st.write("Assuming **Cobb-Douglas Preferences** ($U = C^{0.5}W^{0.5}$), consumers spend 50% of their income on each good.")
         st.info(f"The unique equilibrium world price is **$P_C/P_W = {p_final:.2f}$**.")
         
