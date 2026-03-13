@@ -101,7 +101,7 @@ if not use_equilibrium:
         st.info(f"💡 For mutually beneficial trade, the world price of Cheese ($P_C/P_W$) must be between **{lower_bound:.2f}** and **{upper_bound:.2f}** Wine.")
 else:
     if are_costs_equal:
-        st.error("🚫 **No Equilibrium Possible** (Opportunity costs are equal)")
+        st.error("🚫 **No Trade** (Opportunity costs are equal)")
     else:
         st.subheader("🌐 Market Clearing Equilibrium")
         st.write("Assuming **Cobb-Douglas Preferences** ($U = C^{0.5}W^{0.5}$), consumers spend 50% of their income on each good.")
