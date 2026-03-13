@@ -4,6 +4,7 @@ import numpy as np
 
 st.title("Interactive Ricardian Trade Model")
 st.markdown("Explore productivity, comparative advantage, and general equilibrium trade.")
+st.markdown("(created by Prof. Kerem Cosar, University of Virginia Department of Economics)")
 
 # --- Sidebar Numerical Inputs ---
 st.sidebar.header("🏠 Home Country")
