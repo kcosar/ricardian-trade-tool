@@ -45,20 +45,39 @@ fig, ax = plt.subplots(figsize=(10, 7))
 ax.plot([0, max_c_h], [max_w_h, 0], 'b-', label='Home PPF', linewidth=3)
 ax.plot([0, max_c_f], [max_w_f, 0], 'r-', label='Foreign PPF', linewidth=3)
 
-# Overlay Utility Analysis only if checked
+# Overlay Utility Analysis and Production Points
 if use_equilibrium and not are_costs_equal:
-    # Home
-    inc_h = max_c_h * p_final if oc_c_h < oc_c_f else max_w_h
+    # Home Production & Consumption
+    if oc_c_h < oc_c_f: # Specializes in Cheese
+        prod_h = (max_c_h, 0)
+        inc_h = max_c_h * p_final
+    else: # Specializes in Wine
+        prod_h = (0, max_w_h)
+        inc_h = max_w_h
+    
     c_h, w_h = (0.5 * inc_h / p_final), (0.5 * inc_h)
     ax.plot([0, inc_h/p_final], [inc_h, 0], 'b--', alpha=0.6, label='Home Budget Line')
+    ax.scatter(prod_h[0], prod_h[1], color='blue', edgecolors='black', s=100, zorder=6)
+    ax.text(prod_h[0], prod_h[1], '  Home Prod', verticalalignment='bottom', fontweight='bold', color='blue')
     
-    # Foreign
-    inc_f = max_c_f * p_final if oc_c_f < oc_c_h else max_w_f
+    # Foreign Production & Consumption
+    if oc_c_f < oc_c_h: # Specializes in Cheese
+        prod_f = (max_c_f, 0)
+        inc_f = max_c_f * p_final
+    else: # Specializes in Wine
+        prod_f = (0, max_w_f)
+        inc_f = max_w_f
+        
     c_f, w_f = (0.5 * inc_f / p_final), (0.5 * inc_f)
     ax.plot([0, inc_f/p_final], [inc_f, 0], 'r--', alpha=0.6, label='Foreign Budget Line')
+    ax.scatter(prod_f[0], prod_f[1], color='red', edgecolors='black', s=100, zorder=6)
+    ax.text(prod_f[0], prod_f[1], '  Foreign Prod', verticalalignment='top', fontweight='bold', color='red')
 
-    # Points & Curves
-    ax.scatter([c_h, c_f], [w_h, w_f], color=['blue', 'red'], zorder=5)
+    # Consumption Points & Indifference Curves
+    ax.scatter([c_h, c_f], [w_h, w_f], color=['blue', 'red'], zorder=5, s=80)
+    ax.text(c_h, w_h, '  Home Cons', verticalalignment='bottom')
+    ax.text(c_f, w_f, '  Foreign Cons', verticalalignment='top')
+    
     c_space = np.linspace(0.1, max(max_c_h, max_c_f)*1.5, 100)
     u_h, u_f = (c_h**0.5 * w_h**0.5), (c_f**0.5 * w_f**0.5)
     ax.plot(c_space, (u_h**2)/c_space, 'b:', alpha=0.4)
@@ -73,7 +92,7 @@ ax.grid(True, linestyle=':', alpha=0.6)
 ax.legend()
 st.pyplot(fig)
 
-# --- Analysis Dashboard (Single Instance) ---
+# --- Analysis Dashboard ---
 st.header("Comparative Advantage Analysis")
 col1, col2 = st.columns(2)
 with col1:
@@ -92,18 +111,18 @@ with col2:
 
 st.divider()
 
-# --- Bottom Message branching ---
+# --- Bottom Message ---
 if not use_equilibrium:
     if are_costs_equal:
         st.error("🚫 **No Trade Possible**")
     else:
         lower_bound, upper_bound = min(oc_c_h, oc_c_f), max(oc_c_h, oc_c_f)
-        st.info(f"💡 In free trade, the world price of Cheese ($P_C/P_W$) will be between **{lower_bound:.2f}** and **{upper_bound:.2f}** Wine. To see the equilibrium with a particular utility function, pick the option on the left side menu.")
+        st.info(f"💡 For mutually beneficial trade, the world price of Cheese ($P_C/P_W$) must be between **{lower_bound:.2f}** and **{upper_bound:.2f}** Wine.")
 else:
     if are_costs_equal:
-        st.error("🚫 **No Trade** (Opportunity costs are equal)")
+        st.error("🚫 **No Equilibrium Possible**")
     else:
         st.subheader("🌐 Market Clearing Equilibrium")
         st.write("Assuming **Cobb-Douglas Preferences** ($U = C^{0.5}W^{0.5}$), consumers spend 50% of their income on each good.")
         st.info(f"The unique equilibrium world price is **$P_C/P_W = {p_final:.2f}$**.")
-        st.write(f"At this price, world demand for both goods exactly matches world supply.")
+        st.write("At this price, both countries maximize utility by specializing production at the points marked on the graph.")
