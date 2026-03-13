@@ -90,7 +90,7 @@ if use_equilibrium and not are_costs_equal:
 
     # Drawing Consumption Dots & Request Labels
     ax.scatter([c_h, c_f], [w_h, w_f], color=['blue', 'red'], zorder=5, s=80)
-    ax.text(c_h, w_h, '  Home consumption =', verticalalignment='bottom')
+    ax.text(c_h, w_h, '  Home consumption', verticalalignment='bottom')
     ax.text(c_f, w_f, '  Foreign consumption', verticalalignment='top')
     
     # Indifference Curves
