@@ -24,6 +24,9 @@ max_c_f, max_w_f = L_f * mpl_c_f, L_f * mpl_w_f
 oc_c_h = mpl_w_h / mpl_c_h
 oc_c_f = mpl_w_f / mpl_c_f
 
+# Logic for Equality (handling float precision)
+are_costs_equal = round(oc_c_h, 4) == round(oc_c_f, 4)
+
 # --- Graphing ---
 fig, ax = plt.subplots(figsize=(10, 7))
 
@@ -51,21 +54,30 @@ col1, col2 = st.columns(2)
 with col1:
     st.subheader("Home Country")
     st.write(f"Opportunity Cost of 1 Cheese: **{oc_c_h:.2f} Wine**")
-    if oc_c_h < oc_c_f:
+    if are_costs_equal:
+        st.warning("No Comparative Advantage")
+    elif oc_c_h < oc_c_f:
         st.success("✅ Comparative Advantage: **Cheese**")
     else:
-        st.info("Advantage: Wine")
+        st.success("✅ Comparative Advantage: **Wine**")
 
 with col2:
     st.subheader("Foreign Country")
     st.write(f"Opportunity Cost of 1 Cheese: **{oc_c_f:.2f} Wine**")
-    if oc_c_f < oc_c_h:
+    if are_costs_equal:
+        st.warning("No Comparative Advantage")
+    elif oc_c_f < oc_c_h:
         st.success("✅ Comparative Advantage: **Cheese**")
     else:
-        st.info("Advantage: Wine")
+        st.success("✅ Comparative Advantage: **Wine**")
 
-# Terms of Trade logic
+# --- Terms of Trade logic ---
 st.divider()
-lower_bound = min(oc_c_h, oc_c_f)
-upper_bound = max(oc_c_h, oc_c_f)
-st.info(f"💡 In free trade, the world (relative) price of Cheese ($P_C/P_W$) will be between **{lower_bound:.2f}** and **{upper_bound:.2f}**.")
+
+if are_costs_equal:
+    st.error("🚫 **No Trade Possible**")
+    st.write("Since both countries have the same opportunity costs, there is no comparative advantage. Neither country stands to gain from trade, and the world relative price would simply equal the internal price of both.")
+else:
+    lower_bound = min(oc_c_h, oc_c_f)
+    upper_bound = max(oc_c_h, oc_c_f)
+    st.info(f"💡 In free trade, the world (
