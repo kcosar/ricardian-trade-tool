@@ -12,8 +12,8 @@ mpl_w_h = st.sidebar.number_input("MPL Wine", min_value=0.1, value=2.0, step=0.5
 
 st.sidebar.header("🌍 Foreign Country")
 L_f = st.sidebar.number_input("Labor Force (L*)", min_value=1, value=100)
-mpl_c_f = st.sidebar.number_input("MPL Cheese", min_value=0.1, value=1.0, step=0.5)
-mpl_w_f = st.sidebar.number_input("MPL Wine", min_value=0.1, value=5.0, step=0.5)
+mpl_c_f = st.sidebar.number_input("MPL* Cheese", min_value=0.1, value=1.0, step=0.5)
+mpl_w_f = st.sidebar.number_input("MPL* Wine", min_value=0.1, value=5.0, step=0.5)
 
 # --- Logic & Calculations ---
 # Intercepts
