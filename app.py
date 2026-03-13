@@ -18,7 +18,7 @@ mpl_c_f = st.sidebar.number_input("MPL* Cheese", min_value=0.1, value=1.0, step=
 mpl_w_f = st.sidebar.number_input("MPL* Wine", min_value=0.1, value=5.0, step=0.5)
 
 st.sidebar.divider()
-use_equilibrium = st.sidebar.checkbox("Show Utility & Market Clearing")
+use_equilibrium = st.sidebar.checkbox("Show Utility & Market Clearing in Trade")
 
 # --- Logic & Calculations ---
 max_c_h, max_w_h = L_h * mpl_c_h, L_h * mpl_w_h
