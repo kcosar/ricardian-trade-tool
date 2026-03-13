@@ -68,6 +68,4 @@ with col2:
 st.divider()
 lower_bound = min(oc_c_h, oc_c_f)
 upper_bound = max(oc_c_h, oc_c_f)
-st.info(f"💡 In free trade, the world (relative) price of Cheese (st.latex(r'''
-    P_C/P_W
-''')) will be between **{lower_bound:.2f}** and **{upper_bound:.2f}**.")
+st.info(f"💡 In free trade, the world (relative) price of Cheese (P_C/P_W)) will be between **{lower_bound:.2f}** and **{upper_bound:.2f}**.")
