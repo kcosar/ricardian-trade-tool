@@ -1,41 +1,42 @@
 import streamlit as st
 import matplotlib.pyplot as plt
-import numpy as np
 
 st.title("Interactive Ricardian Trade Model")
+st.markdown("Enter the parameters for both countries to see the PPFs and comparative advantages.")
 
-# --- Sidebar Inputs ---
-st.sidebar.header("Home Country Parameters")
-L_h = st.sidebar.slider("Labor (Home)", 100, 1000, 400)
-mpl_c_h = st.sidebar.slider("MPL Cheese (Home)", 1, 10, 4)
-mpl_w_h = st.sidebar.slider("MPL Wine (Home)", 1, 10, 2)
+# --- Sidebar Numerical Inputs ---
+st.sidebar.header("🏠 Home Country")
+L_h = st.sidebar.number_input("Labor Force (L)", min_value=1, value=100)
+mpl_c_h = st.sidebar.number_input("MPL Cheese (a_LC inverse)", min_value=0.1, value=4.0, step=0.5)
+mpl_w_h = st.sidebar.number_input("MPL Wine (a_LW inverse)", min_value=0.1, value=2.0, step=0.5)
 
-st.sidebar.header("Foreign Country Parameters")
-L_f = st.sidebar.slider("Labor (Foreign)", 100, 1000, 400)
-mpl_c_f = st.sidebar.slider("MPL Cheese (Foreign)", 1, 10, 1)
-mpl_w_f = st.sidebar.slider("MPL Wine (Foreign)", 1, 10, 5)
+st.sidebar.header("🌍 Foreign Country")
+L_f = st.sidebar.number_input("Labor Force (L*)", min_value=1, value=100)
+mpl_c_f = st.sidebar.number_input("MPL Cheese (a_LC* inverse)", min_value=0.1, value=1.0, step=0.5)
+mpl_w_f = st.sidebar.number_input("MPL Wine (a_LW* inverse)", min_value=0.1, value=5.0, step=0.5)
 
-# --- Calculations ---
+# --- Logic & Calculations ---
+# Intercepts
 max_c_h, max_w_h = L_h * mpl_c_h, L_h * mpl_w_h
 max_c_f, max_w_f = L_f * mpl_c_f, L_f * mpl_w_f
 
-# --- Plotting ---
-fig, ax = plt.subplots(figsize=(10, 6))
+# Opp Costs (Wine per 1 unit of Cheese)
+oc_c_h = mpl_w_h / mpl_c_h
+oc_c_f = mpl_w_f / mpl_c_f
 
-# Home PPF (Blue)
-ax.plot([0, max_c_h], [max_w_h, 0], 'b-o', label='Home PPF', linewidth=3)
+# --- Graphing ---
+fig, ax = plt.subplots(figsize=(10, 7))
 
-# Foreign PPF (Red)
-ax.plot([0, max_c_f], [max_w_f, 0], 'r-o', label='Foreign PPF', linewidth=3)
+# Plotting the lines
+ax.plot([0, max_c_h], [max_w_h, 0], 'b-o', label=f'Home PPF (Slope: -{oc_c_h:.2f})', linewidth=3)
+ax.plot([0, max_c_f], [max_w_f, 0], 'r-o', label=f'Foreign PPF (Slope: -{oc_c_f:.2f})', linewidth=3)
 
-# --- The "Snap" Fix ---
-# We find the largest value across both axes to keep the scale consistent
-max_val = max(max_c_h, max_w_h, max_c_f, max_w_f) * 1.1
+# Snapping to axes and adding padding
+limit = max(max_c_h, max_w_h, max_c_f, max_w_f) * 1.1
+ax.set_xlim(0, limit)
+ax.set_ylim(0, limit)
 
-ax.set_xlim(0, max_val)
-ax.set_ylim(0, max_val)
-
-# Add styling
+# Aesthetics
 ax.set_xlabel("Quantity of Cheese", fontsize=12)
 ax.set_ylabel("Quantity of Wine", fontsize=12)
 ax.grid(True, linestyle=':', alpha=0.6)
@@ -43,13 +44,28 @@ ax.legend()
 
 st.pyplot(fig)
 
-# --- Display Comparative Advantage Logic ---
-opp_cost_c_h = mpl_w_h / mpl_c_h
-opp_cost_c_f = mpl_w_f / mpl_c_f
-
-st.write("---")
+# --- Analysis Dashboard ---
+st.header("Comparative Advantage Analysis")
 col1, col2 = st.columns(2)
+
 with col1:
-    st.metric("Home Opp. Cost (Cheese)", f"{opp_cost_c_h:.2f} Wine")
+    st.subheader("Home Analysis")
+    st.write(f"Opportunity Cost of 1 Cheese: **{oc_c_h:.2f} Wine**")
+    if oc_c_h < oc_c_f:
+        st.success("✅ Comparative Advantage: **Cheese**")
+    else:
+        st.info("Advantage: Wine")
+
 with col2:
-    st.metric("Foreign Opp. Cost (Cheese)", f"{opp_cost_c_f:.2f} Wine")
+    st.subheader("Foreign Analysis")
+    st.write(f"Opportunity Cost of 1 Cheese: **{oc_c_f:.2f} Wine**")
+    if oc_c_f < oc_c_h:
+        st.success("✅ Comparative Advantage: **Cheese**")
+    else:
+        st.info("Advantage: Wine")
+
+# Terms of Trade logic
+st.divider()
+lower_bound = min(oc_c_h, oc_c_f)
+upper_bound = max(oc_c_h, oc_c_f)
+st.info(f"💡 For mutually beneficial trade, the world price of Cheese must be between **{lower_bound:.2f}** and **{upper_bound:.2f}** Wine.")
