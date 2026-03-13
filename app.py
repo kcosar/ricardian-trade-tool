@@ -27,14 +27,14 @@ oc_c_h = mpl_w_h / mpl_c_h
 oc_c_f = mpl_w_f / mpl_c_f
 are_costs_equal = round(oc_c_h, 4) == round(oc_c_f, 4)
 
-# Market Clearing Price Calculation
+# 1. Market Clearing Price Calculation
 if not are_costs_equal:
     if oc_c_h < oc_c_f:
-        world_c_supply, world_w_supply = max_c_h, max_w_f
+        world_c_supply_max, world_w_supply_max = max_c_h, max_w_f
     else:
-        world_c_supply, world_w_supply = max_c_f, max_w_h
+        world_c_supply_max, world_w_supply_max = max_c_f, max_w_h
     
-    p_clearing = world_w_supply / world_c_supply
+    p_clearing = world_w_supply_max / world_c_supply_max
     lower_b, upper_b = sorted([oc_c_h, oc_c_f])
     p_final = max(lower_b, min(p_clearing, upper_b))
 else:
@@ -45,39 +45,61 @@ fig, ax = plt.subplots(figsize=(10, 7))
 ax.plot([0, max_c_h], [max_w_h, 0], 'b-', label='Home PPF', linewidth=3)
 ax.plot([0, max_c_f], [max_w_f, 0], 'r-', label='Foreign PPF', linewidth=3)
 
-# Overlay Utility Analysis and Production Points
+# 2. Production & Consumption Logic (Handles Partial Specialization)
 if use_equilibrium and not are_costs_equal:
-    # Home Production & Consumption
-    if oc_c_h < oc_c_f: # Specializes in Cheese
-        prod_h = (max_c_h, 0)
-        inc_h = max_c_h * p_final
-    else: # Specializes in Wine
-        prod_h = (0, max_w_h)
-        inc_h = max_w_h
+    # Calculate World Income in terms of Wine
+    # If p_final is between OCs, both specialize. 
+    # If p_final == oc_h, Home is large and may not specialize.
+    # If p_final == oc_f, Foreign is large and may not specialize.
     
-    c_h, w_h = (0.5 * inc_h / p_final), (0.5 * inc_h)
-    ax.plot([0, inc_h/p_final], [inc_h, 0], 'b--', alpha=0.6, label='Home Budget Line')
-    ax.scatter(prod_h[0], prod_h[1], color='blue', edgecolors='black', s=100, zorder=6)
-    ax.text(prod_h[0], prod_h[1], '  Home production in trade', verticalalignment='bottom', fontweight='bold', color='blue')
+    # Calculate Consumption (always 50/50 spending)
+    inc_h_w = max(max_c_h * p_final, max_w_h) 
+    inc_f_w = max(max_c_f * p_final, max_w_f)
     
-    # Foreign Production & Consumption
-    if oc_c_f < oc_c_h: # Specializes in Cheese
-        prod_f = (max_c_f, 0)
-        inc_f = max_c_f * p_final
-    else: # Specializes in Wine
-        prod_f = (0, max_w_f)
-        inc_f = max_w_f
-        
-    c_f, w_f = (0.5 * inc_f / p_final), (0.5 * inc_f)
-    ax.plot([0, inc_f/p_final], [inc_f, 0], 'r--', alpha=0.6, label='Foreign Budget Line')
-    ax.scatter(prod_f[0], prod_f[1], color='red', edgecolors='black', s=100, zorder=6)
-    ax.text(prod_f[0], prod_f[1], '  Foreign production in trade', verticalalignment='top', fontweight='bold', color='red')
+    c_h, w_h = (0.5 * inc_h_w / p_final), (0.5 * inc_h_w)
+    c_f, w_f = (0.5 * inc_f_w / p_final), (0.5 * inc_f_w)
+    
+    # Production Logic
+    # World Demand for Cheese must equal World Production
+    total_c_demand = c_h + c_f
+    total_w_demand = w_h + w_f
+    
+    if round(p_final, 4) == round(oc_c_h, 4):
+        # Home is the marginal producer (Large Country)
+        # Foreign specializes in its CA
+        if oc_c_f < oc_c_h: # Foreign CA is Cheese
+            prod_f = (max_c_f, 0)
+            prod_h = (total_c_demand - max_c_f, total_w_demand)
+        else: # Foreign CA is Wine
+            prod_f = (0, max_w_f)
+            prod_h = (total_c_demand, total_w_demand - max_w_f)
+    elif round(p_final, 4) == round(oc_c_f, 4):
+        # Foreign is the marginal producer (Large Country)
+        if oc_c_h < oc_c_f: # Home CA is Cheese
+            prod_h = (max_c_h, 0)
+            prod_f = (total_c_demand - max_c_h, total_w_demand)
+        else: # Home CA is Wine
+            prod_h = (0, max_w_h)
+            prod_f = (total_c_demand, total_w_demand - max_w_h)
+    else:
+        # Both fully specialize
+        prod_h = (max_c_h, 0) if oc_c_h < oc_c_f else (0, max_w_h)
+        prod_f = (max_c_f, 0) if oc_c_f < oc_c_h else (0, max_w_f)
 
-    # Consumption Points & Indifference Curves
-    ax.scatter([c_h, c_f], [w_h, w_f], color=['blue', 'red'], zorder=5, s=80)
-    ax.text(c_h, w_h, '  Home consumption in trade', verticalalignment='bottom')
-    ax.text(c_f, w_f, '  Foreign Consumption trade', verticalalignment='top')
+    # Plotting
+    ax.plot([0, inc_h_w/p_final], [inc_h_w, 0], 'b--', alpha=0.6, label='Home Budget Line')
+    ax.plot([0, inc_f_w/p_final], [inc_f_w, 0], 'r--', alpha=0.6, label='Foreign Budget Line')
     
+    # Production Dots
+    ax.scatter(prod_h[0], prod_h[1], color='blue', edgecolors='black', s=100, zorder=6)
+    ax.scatter(prod_f[0], prod_f[1], color='red', edgecolors='black', s=100, zorder=6)
+    ax.text(prod_h[0], prod_h[1], '  Home production', fontweight='bold', color='blue')
+    ax.text(prod_f[0], prod_f[1], '  Foreign production', fontweight='bold', color='red')
+
+    # Consumption Dots
+    ax.scatter([c_h, c_f], [w_h, w_f], color=['blue', 'red'], zorder=5, s=80)
+    
+    # Indifference Curves
     c_space = np.linspace(0.1, max(max_c_h, max_c_f)*1.5, 100)
     u_h, u_f = (c_h**0.5 * w_h**0.5), (c_f**0.5 * w_f**0.5)
     ax.plot(c_space, (u_h**2)/c_space, 'b:', alpha=0.4)
@@ -125,4 +147,9 @@ else:
         st.subheader("🌐 Market Clearing Equilibrium")
         st.write("Assuming **Cobb-Douglas Preferences** ($U = C^{0.5}W^{0.5}$), consumers spend 50% of their income on each good.")
         st.info(f"The unique equilibrium world price is **$P_C/P_W = {p_final:.2f}$**.")
-        st.write("At this price, both countries maximize utility by specializing production at the points marked on the graph.")
+        
+        # Check for Partial Specialization
+        if round(p_final, 4) == round(oc_c_h, 4) or round(p_final, 4) == round(oc_c_f, 4):
+            st.warning("⚠️ **Partial Specialization Detected:** One country is large enough to satisfy world demand at its own autarky price. That country continues to produce both goods.")
+        else:
+            st.success("✨ **Complete Specialization:** Both countries fully specialize in their comparative advantage good.")
