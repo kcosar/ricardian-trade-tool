@@ -7,13 +7,13 @@ st.markdown("Enter the parameters for both countries to see the PPFs and compara
 # --- Sidebar Numerical Inputs ---
 st.sidebar.header("🏠 Home Country")
 L_h = st.sidebar.number_input("Labor Force (L)", min_value=1, value=100)
-mpl_c_h = st.sidebar.number_input("MPL Cheese (a_LC inverse)", min_value=0.1, value=4.0, step=0.5)
-mpl_w_h = st.sidebar.number_input("MPL Wine (a_LW inverse)", min_value=0.1, value=2.0, step=0.5)
+mpl_c_h = st.sidebar.number_input("MPL Cheese", min_value=0.1, value=4.0, step=0.5)
+mpl_w_h = st.sidebar.number_input("MPL Wine", min_value=0.1, value=2.0, step=0.5)
 
 st.sidebar.header("🌍 Foreign Country")
 L_f = st.sidebar.number_input("Labor Force (L*)", min_value=1, value=100)
-mpl_c_f = st.sidebar.number_input("MPL Cheese (a_LC* inverse)", min_value=0.1, value=1.0, step=0.5)
-mpl_w_f = st.sidebar.number_input("MPL Wine (a_LW* inverse)", min_value=0.1, value=5.0, step=0.5)
+mpl_c_f = st.sidebar.number_input("MPL Cheese", min_value=0.1, value=1.0, step=0.5)
+mpl_w_f = st.sidebar.number_input("MPL Wine", min_value=0.1, value=5.0, step=0.5)
 
 # --- Logic & Calculations ---
 # Intercepts
@@ -49,7 +49,7 @@ st.header("Comparative Advantage Analysis")
 col1, col2 = st.columns(2)
 
 with col1:
-    st.subheader("Home Analysis")
+    st.subheader("Home Country")
     st.write(f"Opportunity Cost of 1 Cheese: **{oc_c_h:.2f} Wine**")
     if oc_c_h < oc_c_f:
         st.success("✅ Comparative Advantage: **Cheese**")
@@ -57,7 +57,7 @@ with col1:
         st.info("Advantage: Wine")
 
 with col2:
-    st.subheader("Foreign Analysis")
+    st.subheader("Foreign Country")
     st.write(f"Opportunity Cost of 1 Cheese: **{oc_c_f:.2f} Wine**")
     if oc_c_f < oc_c_h:
         st.success("✅ Comparative Advantage: **Cheese**")
