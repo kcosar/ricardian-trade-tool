@@ -85,13 +85,13 @@ if use_equilibrium and not are_costs_equal:
     # Drawing Production Dots
     ax.scatter(prod_h[0], prod_h[1], color='blue', edgecolors='black', s=120, zorder=6)
     ax.scatter(prod_f[0], prod_f[1], color='red', edgecolors='black', s=120, zorder=6)
-    ax.text(prod_h[0], prod_h[1], '  Home prod.', fontweight='bold', color='blue')
-    ax.text(prod_f[0], prod_f[1], '  Foreign prod.', fontweight='bold', color='red')
+    ax.text(prod_h[0], prod_h[1], '  Home production', fontweight='bold', color='blue')
+    ax.text(prod_f[0], prod_f[1], '  Foreign production', fontweight='bold', color='red')
 
     # Drawing Consumption Dots & Request Labels
     ax.scatter([c_h, c_f], [w_h, w_f], color=['blue', 'red'], zorder=5, s=80)
-    ax.text(c_h, w_h, '  Home (consumption)', verticalalignment='bottom')
-    ax.text(c_f, w_f, '  Foreign (consumption)', verticalalignment='top')
+    ax.text(c_h, w_h, '  Home consumption =', verticalalignment='bottom')
+    ax.text(c_f, w_f, '  Foreign consumption', verticalalignment='top')
     
     # Indifference Curves
     c_space = np.linspace(0.1, max(max_c_h, max_c_f)*1.5, 100)
